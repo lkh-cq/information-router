@@ -1,0 +1,385 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lkh-cq/information-router/schemas/route-plan.schema.json",
+  "title": "Information Router RoutePlan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_profile",
+    "lanes",
+    "query_blocks",
+    "stop_rules",
+    "output_contract"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "request_profile": {
+      "$ref": "#/$defs/requestProfile"
+    },
+    "lanes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/lanePlan"
+      }
+    },
+    "query_blocks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/queryBlock"
+      }
+    },
+    "parallel_groups": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^QB-[A-Za-z0-9_-]+$"
+        }
+      },
+      "default": []
+    },
+    "stop_rules": {
+      "$ref": "#/$defs/stopRules"
+    },
+    "output_contract": {
+      "enum": [
+        "quick_answer",
+        "search_plan",
+        "evidence_map",
+        "audit",
+        "reproduction_package"
+      ]
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "laneName": {
+      "enum": [
+        "orientation",
+        "direct",
+        "alias",
+        "topology",
+        "contradiction",
+        "long-tail",
+        "resource",
+        "citation"
+      ]
+    },
+    "requestProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "goal",
+        "mode",
+        "domain",
+        "stakes",
+        "freshness",
+        "modalities",
+        "constraints",
+        "must_preserve"
+      ],
+      "properties": {
+        "goal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "enum": [
+            "lookup",
+            "discover",
+            "verify",
+            "synthesize",
+            "reproduce",
+            "monitor"
+          ]
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stakes": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "historical",
+                "as_of",
+                "current",
+                "recurring"
+              ]
+            },
+            "as_of": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date"
+            }
+          }
+        },
+        "modalities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "web",
+              "literature",
+              "code",
+              "data",
+              "standards",
+              "patents",
+              "registries",
+              "local_files"
+            ]
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "languages",
+            "geographies",
+            "prohibited_sources",
+            "required_sources"
+          ],
+          "properties": {
+            "date_from": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date"
+            },
+            "date_to": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date"
+            },
+            "languages": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "geographies": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "access": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "prohibited_sources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required_sources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "must_preserve": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entities",
+            "contexts",
+            "relations",
+            "exclusions"
+          ],
+          "properties": {
+            "entities": {
+              "$ref": "#/$defs/stringArray"
+            },
+            "contexts": {
+              "$ref": "#/$defs/stringArray"
+            },
+            "relations": {
+              "$ref": "#/$defs/stringArray"
+            },
+            "exclusions": {
+              "$ref": "#/$defs/stringArray"
+            }
+          }
+        }
+      }
+    },
+    "lanePlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "trigger",
+        "objective",
+        "source_classes",
+        "completion_condition",
+        "residual_risk"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/laneName"
+        },
+        "trigger": {
+          "type": "string",
+          "minLength": 1
+        },
+        "objective": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_classes": {
+          "$ref": "#/$defs/stringArrayNonEmpty"
+        },
+        "completion_condition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "residual_risk": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "queryBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "lane",
+        "objective",
+        "concepts",
+        "source_classes",
+        "must_preserve",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^QB-[A-Za-z0-9_-]+$"
+        },
+        "lane": {
+          "$ref": "#/$defs/laneName"
+        },
+        "objective": {
+          "type": "string",
+          "minLength": 1
+        },
+        "concepts": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/stringArrayNonEmpty"
+          }
+        },
+        "source_classes": {
+          "$ref": "#/$defs/stringArrayNonEmpty"
+        },
+        "must_preserve": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "status": {
+          "enum": [
+            "planned",
+            "executed",
+            "blocked",
+            "skipped"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "stopRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sentinel_recovery",
+        "marginal_yield",
+        "coverage",
+        "contradictions",
+        "provenance"
+      ],
+      "properties": {
+        "sentinel_recovery": {
+          "type": "string",
+          "minLength": 1
+        },
+        "marginal_yield": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coverage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contradictions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provenance": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "stringArrayNonEmpty": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

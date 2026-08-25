@@ -1,0 +1,7 @@
+interface:
+  display_name: "Information Router"
+  short_description: "Route complex searches with traceable evidence"
+  default_prompt: "Use $route-information to turn this request into a traceable multi-source search and evidence plan."
+
+policy:
+  allow_implicit_invocation: true

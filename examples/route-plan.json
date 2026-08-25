@@ -1,0 +1,203 @@
+{
+  "schema_version": "0.1.0",
+  "request_profile": {
+    "goal": "Find reported bypass and compensatory routes around target X while preserving small and negative studies.",
+    "mode": "synthesize",
+    "domain": "biomedical research",
+    "stakes": "medium",
+    "freshness": {
+      "kind": "current",
+      "as_of": null
+    },
+    "modalities": [
+      "web",
+      "literature",
+      "data"
+    ],
+    "constraints": {
+      "date_from": null,
+      "date_to": null,
+      "languages": [
+        "English",
+        "Chinese"
+      ],
+      "geographies": [],
+      "access": null,
+      "prohibited_sources": [],
+      "required_sources": []
+    },
+    "must_preserve": {
+      "entities": [
+        "target X"
+      ],
+      "contexts": [
+        "human-relevant systems"
+      ],
+      "relations": [
+        "bypass",
+        "compensation"
+      ],
+      "exclusions": []
+    }
+  },
+  "lanes": [
+    {
+      "name": "direct",
+      "trigger": "The user asks for evidence about target X.",
+      "objective": "Retrieve direct evidence about inhibition of target X.",
+      "source_classes": [
+        "primary-literature"
+      ],
+      "completion_condition": "Direct effects and contexts are represented.",
+      "residual_risk": "Direct studies may omit adaptation over time."
+    },
+    {
+      "name": "topology",
+      "trigger": "The request explicitly asks for bypass and compensation.",
+      "objective": "Map alternative and adaptive routes around target X.",
+      "source_classes": [
+        "primary-literature",
+        "relation-resources"
+      ],
+      "completion_condition": "Material bypass and compensation edges have context and provenance.",
+      "residual_risk": "Curated edges may not be experimentally independent."
+    },
+    {
+      "name": "contradiction",
+      "trigger": "Negative and conflicting outcomes are decision-relevant.",
+      "objective": "Find null, contradictory, corrected, and failed replication evidence.",
+      "source_classes": [
+        "primary-literature",
+        "registries"
+      ],
+      "completion_condition": "At least one adversarial query family is executed.",
+      "residual_risk": "Unpublished null results may remain unavailable."
+    },
+    {
+      "name": "long-tail",
+      "trigger": "The user explicitly asks to preserve small studies.",
+      "objective": "Retrieve small, early, gray, and non-mainstream evidence without pre-filtering by scale.",
+      "source_classes": [
+        "preprints",
+        "proceedings",
+        "theses"
+      ],
+      "completion_condition": "Selected long-tail classes are searched or marked blocked.",
+      "residual_risk": "Methods and independence may be incompletely reported."
+    }
+  ],
+  "query_blocks": [
+    {
+      "id": "QB-direct-01",
+      "lane": "direct",
+      "objective": "Find direct perturbation evidence for target X.",
+      "concepts": {
+        "entity": [
+          "target X"
+        ],
+        "relation": [
+          "inhibition",
+          "knockdown"
+        ]
+      },
+      "source_classes": [
+        "primary-literature"
+      ],
+      "must_preserve": [
+        "target X"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "QB-topology-01",
+      "lane": "topology",
+      "objective": "Find bypass, compensation, redundancy, or feedback around target X.",
+      "concepts": {
+        "entity": [
+          "target X"
+        ],
+        "relation": [
+          "bypass",
+          "compensatory",
+          "redundant",
+          "feedback"
+        ]
+      },
+      "source_classes": [
+        "primary-literature",
+        "relation-resources"
+      ],
+      "must_preserve": [
+        "bypass",
+        "compensation"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "QB-contradiction-01",
+      "lane": "contradiction",
+      "objective": "Find null or conflicting perturbation outcomes.",
+      "concepts": {
+        "entity": [
+          "target X"
+        ],
+        "viewpoint": [
+          "no effect",
+          "negative result",
+          "failed replication",
+          "contradictory"
+        ]
+      },
+      "source_classes": [
+        "primary-literature",
+        "registries"
+      ],
+      "must_preserve": [
+        "negative results"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "QB-long-tail-01",
+      "lane": "long-tail",
+      "objective": "Find small studies and gray records concerning target X adaptation.",
+      "concepts": {
+        "entity": [
+          "target X"
+        ],
+        "source": [
+          "preprint",
+          "conference",
+          "thesis"
+        ]
+      },
+      "source_classes": [
+        "preprints",
+        "proceedings",
+        "theses"
+      ],
+      "must_preserve": [
+        "small studies"
+      ],
+      "status": "planned"
+    }
+  ],
+  "parallel_groups": [
+    [
+      "QB-direct-01",
+      "QB-contradiction-01",
+      "QB-long-tail-01"
+    ]
+  ],
+  "stop_rules": {
+    "sentinel_recovery": "Recover known direct and bypass sentinel records when available.",
+    "marginal_yield": "A new round adds no material independent evidence group or relation class.",
+    "coverage": "All must-preserve items map to executed or explicitly blocked query blocks.",
+    "contradictions": "Material conflicts are explained or retained as unresolved.",
+    "provenance": "All decision-relevant records have identifiers, versions, retrieval dates, and query block IDs."
+  },
+  "output_contract": "search_plan",
+  "assumptions": [
+    "Target X will be replaced by its canonical identifier and aliases before execution."
+  ]
+}

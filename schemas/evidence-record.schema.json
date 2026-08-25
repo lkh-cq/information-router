@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lkh-cq/information-router/schemas/evidence-record.schema.json",
+  "title": "Information Router EvidenceRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "source_id",
+    "version_id",
+    "study_family_id",
+    "claim",
+    "polarity",
+    "evidence_kind",
+    "directness",
+    "method",
+    "context",
+    "independence_group",
+    "status",
+    "provenance"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "pattern": "^ER-[A-Za-z0-9_-]+$"
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "study_family_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim": {
+      "type": "string",
+      "minLength": 1
+    },
+    "polarity": {
+      "enum": [
+        "supporting",
+        "contradicting",
+        "null",
+        "mixed",
+        "contextual",
+        "not_applicable"
+      ]
+    },
+    "evidence_kind": {
+      "enum": [
+        "primary_study",
+        "synthesis",
+        "official_record",
+        "code",
+        "data",
+        "benchmark",
+        "report",
+        "commentary",
+        "other"
+      ]
+    },
+    "directness": {
+      "enum": [
+        "direct",
+        "indirect",
+        "inference"
+      ]
+    },
+    "method": {
+      "type": "string"
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean",
+          "null"
+        ]
+      }
+    },
+    "independence_group": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "active",
+        "superseded",
+        "corrected",
+        "withdrawn",
+        "retracted",
+        "deprecated",
+        "unknown"
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retrieved_at",
+        "query_block_id",
+        "locator"
+      ],
+      "properties": {
+        "retrieved_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "query_block_id": {
+          "type": "string",
+          "pattern": "^QB-[A-Za-z0-9_-]+$"
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "access_limit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

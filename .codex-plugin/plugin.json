@@ -1,0 +1,29 @@
+{
+  "name": "information-router",
+  "version": "0.1.0",
+  "description": "Route complex information requests into reproducible search, relation expansion, long-tail discovery, contradiction checks, and bias audits.",
+  "repository": "https://github.com/lkh-cq/information-router",
+  "keywords": [
+    "research",
+    "retrieval",
+    "evidence",
+    "routing",
+    "provenance"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Information Router",
+    "shortDescription": "Traceable multi-source information routing",
+    "longDescription": "Compile complex information requests into source-aware search lanes, evidence records, relation maps, bias audits, and reproducible stopping rules.",
+    "developerName": "lkh-cq",
+    "category": "Productivity",
+    "capabilities": [
+      "Read"
+    ],
+    "defaultPrompt": [
+      "Build a reproducible multi-source search plan for this question.",
+      "Map the evidence, contradictions, side paths, and long-tail sources for this topic."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "record_id": "ER-0012",
+  "source_id": "https://example.org/record/12",
+  "version_id": "published-v1",
+  "study_family_id": "SF-0007",
+  "claim": "Perturbing target X increased activity in an alternative route under condition Y.",
+  "polarity": "supporting",
+  "evidence_kind": "primary_study",
+  "directness": "direct",
+  "method": "Target perturbation with time-resolved pathway measurement.",
+  "context": {
+    "system": "human cell model",
+    "condition": "Y",
+    "time": "24 hours"
+  },
+  "independence_group": "dataset-A",
+  "status": "active",
+  "provenance": {
+    "retrieved_at": "2026-08-16",
+    "query_block_id": "QB-topology-01",
+    "locator": "Results section and supplementary dataset S2",
+    "access_limit": null
+  }
+}
