@@ -171,6 +171,7 @@ Stop only when the applicable conditions are met:
 - provenance, retrieval dates, versions, and limitations are complete enough to audit.
 
 High-stakes tasks also require authoritative-source and contradiction checks. A fixed result count is not a stopping rule.
+If a quantitative marginal-yield threshold is used, derive it from the task design or obtain user agreement. Never invent a universal percentage or round count.
 
 If the user asks for a reproducible plan rather than execution, stop after producing an executable RoutePlan with these conditions.
 
