@@ -1,0 +1,78 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: JSON/YAML syntax check
+        run: |
+          python3 - << 'EOF'
+          import json, pathlib, sys
+          bad = []
+          for p in pathlib.Path('.').rglob('*.json'):
+              try: json.loads(p.read_text(encoding='utf-8'))
+              except Exception as e: bad.append(f"{p}: {e}")
+          for p in list(pathlib.Path('.').rglob('*.jsonl')):
+              for i, line in enumerate(p.read_text(encoding='utf-8').splitlines(), 1):
+                  if line.strip():
+                      try: json.loads(line)
+                      except Exception as e: bad.append(f"{p}:{i}: {e}")
+          if bad:
+              print('\n'.join(bad)); sys.exit(1)
+          print("all JSON/JSONL valid")
+          EOF
+
+      - name: Manifest consistency
+        run: |
+          python3 - << 'EOF'
+          import json, pathlib, sys
+          m = json.load(open('.codex-plugin/plugin.json'))
+          errs = []
+          skills_dir = pathlib.Path('skills')
+          if m.get('skills') != './skills/':
+              errs.append("plugin.json skills path mismatch")
+          for p in skills_dir.iterdir():
+              if p.is_dir() and not (p / 'SKILL.md').exists():
+                  errs.append(f"skill dir {p.name} missing SKILL.md")
+          if errs:
+              print('\n'.join(errs)); sys.exit(1)
+          print("manifest consistent")
+          EOF
+
+      - name: Schema validators against examples
+        run: |
+          python3 scripts/validate_route.py examples/route-plan.json
+          python3 scripts/validate_evidence.py examples/evidence-record.json
+
+      - name: Eval cases well-formed
+        run: |
+          python3 - << 'EOF'
+          import json, pathlib, sys
+          errs = []
+          for p in sorted(pathlib.Path('evals').glob('cases*.jsonl')):
+              for i, line in enumerate(p.read_text(encoding='utf-8').splitlines(), 1):
+                  if not line.strip(): continue
+                  d = json.loads(line)
+                  for key in ('id', 'prompt', 'expected'):
+                      if key not in d:
+                          errs.append(f"{p}:{i}: missing '{key}'")
+          ids = [json.loads(l)['id'] for p in pathlib.Path('evals').glob('cases*.jsonl')
+                 for l in p.read_text(encoding='utf-8').splitlines() if l.strip()]
+          if len(ids) != len(set(ids)):
+              errs.append("duplicate case ids")
+          if errs:
+              print('\n'.join(errs)); sys.exit(1)
+          print(f"{len(ids)} eval cases well-formed")
+          EOF
