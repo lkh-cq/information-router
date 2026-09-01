@@ -55,6 +55,11 @@ jobs:
         run: |
           python3 scripts/validate_route.py examples/route-plan.json
           python3 scripts/validate_evidence.py examples/evidence-record.json
+          python3 scripts/validate_academic.py examples/academic-protocol.json
+
+      - name: Semantic eval runner (positive + adversarial)
+        run: |
+          python3 scripts/eval_runner.py
 
       - name: Eval cases well-formed
         run: |

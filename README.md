@@ -8,9 +8,23 @@ Status: `v0.1.0` scaffold. The architecture is intentionally independent from an
 
 - `route-information`: the executable Agent workflow;
 - routing, source, evidence, bias, and output references;
-- JSON Schemas for route plans and evidence records;
-- boundary and end-to-end eval cases;
+- JSON Schemas for route plans, evidence records, and the academic protocol;
+- an academic protocol: non-drifting Target, versioned Themes with `sub_n`
+  topology, a strict three-round loop, per-round gates, and auditable evidence;
+- boundary, end-to-end, academic, and adversarial eval cases;
 - product plan and implementation guidance.
+
+## Validation
+
+CI executes the real JSON Schemas and runs a semantic eval runner:
+
+- `scripts/validate_route.py` validates route plans;
+- `scripts/validate_evidence.py` validates evidence records;
+- `scripts/validate_academic.py` executes `schemas/academic-protocol.schema.json`
+  and checks semantic invariants (target hash stability, theme topology, phase
+  order, query-block closure, real locators, interest/funding/family);
+- `scripts/eval_runner.py` runs the positive examples plus 12 adversarial
+  mutations and every eval case, so CI turns red on regressions.
 
 ## Design principles
 

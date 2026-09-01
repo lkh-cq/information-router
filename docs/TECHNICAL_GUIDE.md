@@ -41,16 +41,23 @@ information-router/
 │           ├── routing-model.md
 │           ├── source-policy.md
 │           ├── evidence-and-bias.md
+│           ├── academic-protocol.md
 │           └── output-contracts.md
 ├── schemas/
 │   ├── route-plan.schema.json
-│   └── evidence-record.schema.json
+│   ├── evidence-record.schema.json
+│   └── academic-protocol.schema.json
 ├── evals/
 │   ├── cases.jsonl
+│   ├── cases_complex.jsonl
+│   ├── cases_academic.jsonl
+│   ├── adversarial.jsonl
 │   └── rubric.md
 ├── scripts/
 │   ├── validate_route.py
-│   └── validate_evidence.py
+│   ├── validate_evidence.py
+│   ├── validate_academic.py
+│   └── eval_runner.py
 ├── docs/
 │   ├── PLAN.md
 │   └── TECHNICAL_GUIDE.md
@@ -373,12 +380,25 @@ BiasLedger 字段：`bias_type`、`signal`、`affected_scope`、`compensation`�
 - inferred edge 不得没有 inference note；
 - withdrawn/corrected 状态不得丢失版本信息。
 
+`academic-protocol.schema.json` 定义学术协议，并由 `validate_academic.py` 执行真实 JSON Schema 与语义不变量：
+
+- `Target`：不可漂移，`statement_hash` 必须等于 `sha256(statement)`，所有轮次与对齐记录携带同一哈希；
+- `Theme`：版本化，`sub_n` 父子拓扑无环、无孤立节点、序号完整；
+- 三轮 Loop：严格 `coarse → subtheme → fine`，不可跳轮或乱序；
+- 逐轮 `alignment`（Target 复核、覆盖主题）、`cleaning`（去重/版本/家族归并）、`review`、`gate`；
+- 证据链：locator 必须为真实 URL/DOI/arXiv/PMID/file，且逐条记录利益关系、资金来源与证据家族；
+- 拒绝多余字段、不存在的 query-block、伪造 locator、未通过的门。
+
 脚本只做确定性检查：
 
 ```bash
 python scripts/validate_route.py examples/route-plan.json
 python scripts/validate_evidence.py examples/evidence-ledger.jsonl
+python scripts/validate_academic.py examples/academic-protocol.json
+python scripts/eval_runner.py
 ```
+
+`eval_runner.py` 是语义评测执行器：它运行正向示例、12 个对抗变异和全部 eval 案例。对抗样例证明校验器不是循环论证——漂移、乱序、伪造 locator、孤立/未知 query-block、多余字段、拓扑环、缺失利益声明、报告漂移、未通过的门、孤立主题、sub_n 跳号都会被拒绝。
 
 不要让脚本自动生成“真实性分数”。
 
@@ -401,6 +421,7 @@ python scripts/validate_evidence.py examples/evidence-ledger.jsonl
 - 选 lane 或解释维度时读 `routing-model.md`；
 - 选择来源和工具降级时读 `source-policy.md`；
 - 归一证据、建关系或审计偏倚时读 `evidence-and-bias.md`；
+- 学术级任务（系统综述、证据地图、监管/政策决策、机制综合）读 `academic-protocol.md`；
 - 用户要求可复现计划、证据表或审计记录时读 `output-contracts.md`。
 
 ## 15. Eval 方案
@@ -474,10 +495,11 @@ GitHub Actions 最小门禁：
 2. manifest 与目录一致；
 3. Skill frontmatter 的 name/description；
 4. schema 自身有效；
-5. examples 通过 schema；
+5. examples 通过 schema（route-plan、evidence-record、academic-protocol）；
 6. eval 文件可解析；
-7. 禁止三元术语和路径依赖的独立性检查；
-8. 许可证与版本检查。
+7. `eval_runner.py` 语义评测通过（正向 + 对抗 + 全部案例）；
+8. 禁止三元术语和路径依赖的独立性检查；
+9. 许可证与版本检查。
 
 独立性检查可扫描：`sanyuan`、`consciousness-bus`、`三元`、`三才`、`ρ`、`θ`、`StoreNode`、`ReadNode` 等标识；文档中若为了声明“不依赖”而出现，可用 allowlist 限定到 ADR 或计划文档。
 

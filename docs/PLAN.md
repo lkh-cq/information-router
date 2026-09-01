@@ -117,7 +117,8 @@
 - `EvidenceRecord`：证据、上下文、方法、版本和来源；
 - `RelationEdge`：源实体—关系—目标实体及限定条件；
 - `BiasLedger`：偏倚信号、补偿动作和残余风险；
-- `StopReport`：停止依据、未覆盖项和下一轮入口。
+- `StopReport`：停止依据、未覆盖项和下一轮入口；
+- `AcademicProtocol`：不可漂移的 `Target`、版本化 `Theme` 与 `sub_n` 拓扑、三轮 Loop、逐轮对齐/清洗/审核/回归门、可审计证据链。
 
 ## 6. 版本路线图
 
@@ -126,6 +127,7 @@
 | M0 范式冻结 | 术语表、边界、对象模型、路由规则 | 不含三元依赖；同一案例可被两位评审解释一致 |
 | M1 skills-only MVP | manifest、`route-information`、四份 references | 能处理简单、复杂、机制、长尾、反证五类请求 |
 | M2 确定性校验 | JSON Schema、静态校验脚本、示例输出 | 缺字段、非法 lane、无 provenance 能被明确拒绝 |
+| M2.5 学术协议 | `academic-protocol.schema.json`、`validate_academic.py`、`eval_runner.py` | Target 哈希不可漂移；Theme `sub_n` 拓扑无环；三轮 Loop 顺序严格；locator 真实；对抗样例全部被拒 |
 | M3 系统评测 | 20–30 个正/负/边界案例与评分规则 | 触发准确；无证据伪造；关键通道召回达标 |
 | M4 本地插件测试 | 本地 marketplace 安装与 ChatGPT/Codex 测试 | direct、indirect、follow-up、negative、boundary 均通过 |
 | M5 MCP 决策门 | ADR：继续 skills-only 或增加 MCP | 只有真实的持久化、鉴权或受控服务需求才进入 MCP |
@@ -191,7 +193,7 @@
 
 | 风险 | 早期信号 | 缓解措施 |
 |---|---|---|
-| 通用化过度 | 所有任务都生成同样的完整流程 | 最小充分路由；简单任务设快速路径 |
+| 通用化过度 | 所有任务都生成同样的完整流程 | 最小充分路由；简单问题设快速路径 |
 | 伪自主 | 只把固定数据库清单换成新术语 | lane 选择必须依赖 RequestProfile 与工具能力 |
 | 长尾噪声 | 小论文召回增加但无法判断独立性 | 版本归并、方法与情境字段、证据强度后置评价 |
 | 关系幻觉 | Agent 从共现推断机制边 | RelationEdge 必须区分 reported、inferred、hypothesized |
