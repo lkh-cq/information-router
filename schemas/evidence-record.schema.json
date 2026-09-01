@@ -120,6 +120,10 @@
           "type": "string",
           "minLength": 1
         },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
         "access_limit": {
           "type": [
             "string",

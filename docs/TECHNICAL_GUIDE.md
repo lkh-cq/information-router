@@ -252,7 +252,7 @@ def route_information(request, capabilities):
   "study_family_id": "SF-0007",
   "claim": "...",
   "polarity": "supporting",
-  "evidence_kind": "primary-experiment",
+  "evidence_kind": "primary_study",
   "directness": "direct",
   "method": "...",
   "context": {
@@ -265,7 +265,8 @@ def route_information(request, capabilities):
   "provenance": {
     "retrieved_at": "2026-08-16",
     "query_block_id": "QB-004",
-    "locator": "..."
+    "locator": "...",
+    "content_hash": "sha256-of-fetched-source-content"
   }
 }
 ```

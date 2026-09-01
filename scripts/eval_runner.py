@@ -104,6 +104,23 @@ def mut_sub_n_wrong(doc: dict) -> None:
     doc["theme_topology"]["edges"][0]["sub_n"] = 5
 
 
+def mut_fake_content_hash(doc: dict) -> None:
+    doc["evidence"][0]["content_hash"] = "not-a-sha256"
+
+
+def mut_missing_content_hash(doc: dict) -> None:
+    del doc["evidence"][0]["content_hash"]
+
+
+def mut_fake_coverage(doc: dict) -> None:
+    doc["coverage"]["counter_evidence"]["satisfied"] = True
+    doc["coverage"]["counter_evidence"]["min_records"] = 99
+
+
+def mut_missing_coverage(doc: dict) -> None:
+    del doc["coverage"]["side_paths"]
+
+
 MUTATIONS = {
     "drift_hash": (mut_drift_hash, "target hash drift"),
     "wrong_phase_order": (mut_wrong_phase_order, "strict phase order violated"),
@@ -117,6 +134,10 @@ MUTATIONS = {
     "unpassed_gate": (mut_unpassed_gate, "gate has unpassed check"),
     "disconnected_theme": (mut_disconnected_theme, "disconnected theme"),
     "sub_n_wrong": (mut_sub_n_wrong, "sub_n ordinals incomplete"),
+    "fake_content_hash": (mut_fake_content_hash, "content hash is not sha256"),
+    "missing_content_hash": (mut_missing_content_hash, "missing content hash"),
+    "fake_coverage": (mut_fake_coverage, "coverage self-reported but not derived"),
+    "missing_coverage": (mut_missing_coverage, "missing coverage category"),
 }
 
 

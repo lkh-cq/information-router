@@ -303,6 +303,52 @@ def check_evidence(protocol: dict, errors: list[str]) -> None:
             errors.append(f"evidence {record['evidence_id']} family must be non-empty")
 
 
+def _coverage_counts(protocol: dict) -> dict[str, int]:
+    counts = {
+        "counter_evidence": 0,
+        "negative_results": 0,
+        "long_tail": 0,
+        "small_papers": 0,
+        "side_paths": 0,
+    }
+    for record in protocol["evidence"]:
+        kind = record.get("evidence_kind")
+        polarity = record.get("polarity")
+        if polarity == "contradicting" or kind == "counter_evidence":
+            counts["counter_evidence"] += 1
+        if polarity == "null" or kind == "negative_result":
+            counts["negative_results"] += 1
+        if kind == "long_tail":
+            counts["long_tail"] += 1
+        if kind == "small_paper":
+            counts["small_papers"] += 1
+        if kind == "side_path":
+            counts["side_paths"] += 1
+    return counts
+
+
+def check_coverage(protocol: dict, errors: list[str]) -> None:
+    """Verify minimum coverage for counter-evidence, negative results, long-tail,
+    small papers, and side paths is DERIVED from actual evidence records, not
+    self-reported. A declared satisfied=true with too few real records is an error."""
+    coverage = protocol.get("coverage", {})
+    counts = _coverage_counts(protocol)
+    for category, requirement in coverage.items():
+        min_records = requirement.get("min_records", 0)
+        actual = counts.get(category, 0)
+        if actual < min_records:
+            errors.append(
+                f"coverage.{category}: need at least {min_records} record(s), "
+                f"found {actual}"
+            )
+        derived_satisfied = actual >= min_records
+        if requirement.get("satisfied") != derived_satisfied:
+            errors.append(
+                f"coverage.{category}: declared satisfied={requirement.get('satisfied')} "
+                f"does not match derived {derived_satisfied} from {actual} record(s)"
+            )
+
+
 def validate_academic(protocol: dict, schema: dict) -> list[str]:
     errors = validate_schema(protocol, schema)
     if errors:
@@ -313,6 +359,7 @@ def validate_academic(protocol: dict, schema: dict) -> list[str]:
     check_alignment_records(protocol, frozen_hash, errors)
     check_gates(protocol, errors)
     check_evidence(protocol, errors)
+    check_coverage(protocol, errors)
     return errors
 
 

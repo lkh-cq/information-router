@@ -67,11 +67,18 @@
     {"round_id": "R2", "cleaning_passed": true, "review_passed": true, "regression_passed": true, "notes": "子主题检索门通过。"},
     {"round_id": "R3", "cleaning_passed": true, "review_passed": true, "regression_passed": true, "notes": "精细检索门通过。"}
   ],
+  "coverage": {
+    "counter_evidence": {"min_records": 1, "satisfied": true},
+    "negative_results": {"min_records": 1, "satisfied": true},
+    "long_tail": {"min_records": 1, "satisfied": true},
+    "small_papers": {"min_records": 1, "satisfied": true},
+    "side_paths": {"min_records": 1, "satisfied": true}
+  },
   "evidence": [
-    {"evidence_id": "EV-01", "locator": "https://doi.org/10.1000/xyz123", "claim": "靶点 X 抑制后出现旁通通路激活。", "polarity": "supporting", "interest": {"declared": true, "conflicts": []}, "funding": "NIH grant R01-XX", "family": "FAM-01", "query_block": "QB-sub-01"},
-    {"evidence_id": "EV-02", "locator": "10.1000/abc456", "claim": "另一队列未观察到旁通代偿。", "polarity": "contradicting", "interest": {"declared": true, "conflicts": ["作者受靶点 X 抑制剂厂商资助"]}, "funding": "PharmaCorp grant", "family": "FAM-02", "query_block": "QB-sub-01"},
-    {"evidence_id": "EV-03", "locator": "arXiv:2401.12345", "claim": "预印本报告阴性结果，样本量小。", "polarity": "null", "interest": {"declared": true, "conflicts": []}, "funding": "unfunded", "family": "FAM-03", "query_block": "QB-sub-03"},
-    {"evidence_id": "EV-04", "locator": "PMID:12345678", "claim": "旧命名研究被重新映射到当前术语。", "polarity": "supporting", "interest": {"declared": true, "conflicts": []}, "funding": "university fund", "family": "FAM-01", "query_block": "QB-sub-03"},
-    {"evidence_id": "EV-05", "locator": "file://references/raw-data-01.csv", "claim": "基础数据表：各研究样本量与效应量。", "polarity": "uncertain", "interest": {"declared": true, "conflicts": []}, "funding": "not applicable", "family": "FAM-DATA", "query_block": "QB-fine-01"}
+    {"evidence_id": "EV-01", "locator": "https://doi.org/10.1000/xyz123", "content_hash": "2f7b785173b674788bdd6f4f8cb074925a91e476c2385a195a4d332e50301580", "evidence_kind": "side_path", "claim": "靶点 X 抑制后出现旁通通路激活。", "polarity": "supporting", "interest": {"declared": true, "conflicts": []}, "funding": "NIH grant R01-XX", "family": "FAM-01", "query_block": "QB-sub-01"},
+    {"evidence_id": "EV-02", "locator": "10.1000/abc456", "content_hash": "666c3305558b5752eac2804110c8061f30a8856ce31b8607a13a717028a6e627", "evidence_kind": "counter_evidence", "claim": "另一队列未观察到旁通代偿。", "polarity": "contradicting", "interest": {"declared": true, "conflicts": ["作者受靶点 X 抑制剂厂商资助"]}, "funding": "PharmaCorp grant", "family": "FAM-02", "query_block": "QB-sub-01"},
+    {"evidence_id": "EV-03", "locator": "arXiv:2401.12345", "content_hash": "f59b8024cc8cdcad81bdac8ccd1554e6425aec52d4586c906413634c0a7080dc", "evidence_kind": "small_paper", "claim": "预印本报告阴性结果，样本量小。", "polarity": "null", "interest": {"declared": true, "conflicts": []}, "funding": "unfunded", "family": "FAM-03", "query_block": "QB-sub-03"},
+    {"evidence_id": "EV-04", "locator": "PMID:12345678", "content_hash": "2137f282225ac0a4b6b3cf323ba6855799a90f4b9b94176cb95d14a5346126a5", "evidence_kind": "long_tail", "claim": "旧命名研究被重新映射到当前术语。", "polarity": "supporting", "interest": {"declared": true, "conflicts": []}, "funding": "university fund", "family": "FAM-01", "query_block": "QB-sub-03"},
+    {"evidence_id": "EV-05", "locator": "file://references/raw-data-01.csv", "content_hash": "ab474d6693967dadb6585e5bf9511fb402dcd3150f14a7466322fec408cc6821", "evidence_kind": "data", "claim": "基础数据表：各研究样本量与效应量。", "polarity": "uncertain", "interest": {"declared": true, "conflicts": []}, "funding": "not applicable", "family": "FAM-DATA", "query_block": "QB-fine-01"}
   ]
 }

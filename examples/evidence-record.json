@@ -16,9 +16,10 @@
   "independence_group": "dataset-A",
   "status": "active",
   "provenance": {
-    "retrieved_at": "2026-08-16",
-    "query_block_id": "QB-topology-01",
-    "locator": "Results section and supplementary dataset S2",
-    "access_limit": null
-  }
+        "retrieved_at": "2026-08-16",
+        "query_block_id": "QB-topology-01",
+        "locator": "Results section and supplementary dataset S2",
+        "content_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef0",
+        "access_limit": null
+    }
 }
