@@ -5,7 +5,7 @@
   "description": "Non-drifting Target, versioned Themes with sub_n topology, strict three-round loop (coarse -> subtheme -> fine), per-round alignment/cleaning/review/gates, and auditable evidence with real locators, interest, funding, and family.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "target", "themes", "theme_topology", "query_blocks", "rounds", "alignment_records", "gates", "evidence"],
+  "required": ["schema_version", "target", "themes", "theme_topology", "query_blocks", "rounds", "alignment_records", "gates", "coverage", "evidence"],
   "properties": {
     "schema_version": {"const": "0.1.0"},
     "target": {"$ref": "#/$defs/target"},
@@ -15,6 +15,7 @@
     "rounds": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/round"}},
     "alignment_records": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/alignmentRecord"}},
     "gates": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/gate"}},
+    "coverage": {"$ref": "#/$defs/coverage"},
     "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidenceRecord"}}
   },
   "$defs": {
@@ -139,16 +140,37 @@
     },
     "evidenceRecord": {
       "type": "object", "additionalProperties": false,
-      "required": ["evidence_id", "locator", "claim", "polarity", "interest", "funding", "family", "query_block"],
+      "required": ["evidence_id", "locator", "content_hash", "evidence_kind", "claim", "polarity", "interest", "funding", "family", "query_block"],
       "properties": {
         "evidence_id": {"type": "string", "pattern": "^EV-[A-Za-z0-9_-]+$"},
         "locator": {"type": "string", "minLength": 1},
+        "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "evidence_kind": {"enum": ["primary", "long_tail", "small_paper", "side_path", "negative_result", "counter_evidence", "review", "data", "other"]},
         "claim": {"type": "string", "minLength": 1},
         "polarity": {"enum": ["supporting", "contradicting", "null", "uncertain"]},
         "interest": {"$ref": "#/$defs/interest"},
         "funding": {"type": "string", "minLength": 1},
         "family": {"type": "string", "minLength": 1},
         "query_block": {"type": "string", "pattern": "^QB-[A-Za-z0-9_-]+$"}
+      }
+    },
+    "coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["counter_evidence", "negative_results", "long_tail", "small_papers", "side_paths"],
+      "properties": {
+        "counter_evidence": {"$ref": "#/$defs/coverageRequirement"},
+        "negative_results": {"$ref": "#/$defs/coverageRequirement"},
+        "long_tail": {"$ref": "#/$defs/coverageRequirement"},
+        "small_papers": {"$ref": "#/$defs/coverageRequirement"},
+        "side_paths": {"$ref": "#/$defs/coverageRequirement"}
+      }
+    },
+    "coverageRequirement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["min_records", "satisfied"],
+      "properties": {
+        "min_records": {"type": "integer", "minimum": 0},
+        "satisfied": {"type": "boolean"}
       }
     },
     "interest": {

@@ -22,9 +22,16 @@ CI executes the real JSON Schemas and runs a semantic eval runner:
 - `scripts/validate_evidence.py` validates evidence records;
 - `scripts/validate_academic.py` executes `schemas/academic-protocol.schema.json`
   and checks semantic invariants (target hash stability, theme topology, phase
-  order, query-block closure, real locators, interest/funding/family);
-- `scripts/eval_runner.py` runs the positive examples plus 12 adversarial
+  order, query-block closure, real locators, content hashes,
+  interest/funding/family, and derived coverage);
+- `scripts/eval_runner.py` runs the positive examples plus 16 adversarial
   mutations and every eval case, so CI turns red on regressions.
+
+The academic protocol also enforces minimum coverage for counter-evidence,
+negative results, long-tail sources, small papers, and side paths. Coverage is
+**derived** from the actual evidence records (polarity + `evidence_kind`), not
+self-reported: a declared `satisfied: true` with too few real records fails
+validation.
 
 ## Design principles
 
@@ -36,3 +43,7 @@ CI executes the real JSON Schemas and runs a semantic eval runner:
 - Missing tools produce an explicit execution gap, never a fabricated search result.
 
 See [the product plan](docs/PLAN.md) and [the technical guide](docs/TECHNICAL_GUIDE.md).
+
+## License
+
+MIT License. See [LICENSE](LICENSE).
