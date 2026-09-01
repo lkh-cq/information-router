@@ -191,6 +191,18 @@ Read `references/output-contracts.md` for detailed templates.
 
 Do not provide a raw bibliography without synthesis unless the user explicitly requests one. Cite web sources near the claims they support.
 
+## Academic protocol
+
+For academic-grade tasks (systematic review, evidence map, regulatory or policy decision basis, mechanism synthesis), run the workflow under the academic protocol in `references/academic-protocol.md`:
+
+- Freeze a non-drifting `Target` with a `statement_hash`; never reword it mid-run.
+- Organize versioned `Themes` under the Target with a `sub_n` parent-child topology.
+- Execute the strict three-round loop in order: `coarse` broad retrieval, `subtheme` per-theme retrieval, `fine` citation/interest/funding/data verification.
+- Record per-round alignment (target re-checked, themes covered), cleaning (dedup, version and family merge), review, and a regression gate before advancing.
+- Keep every evidence record with a real locator (URL/DOI/arXiv/PMID/file), declared interest, funding, and study family.
+
+The executable contract is `schemas/academic-protocol.schema.json`, enforced by `scripts/validate_academic.py` and `scripts/eval_runner.py`. A protocol that fails validation is not complete.
+
 ## Quality gate
 
 Before finalizing, verify:

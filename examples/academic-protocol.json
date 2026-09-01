@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1.0",
+  "target": {
+    "target_id": "T-X-BYPASS-2026",
+    "statement": "系统评估靶点 X 被抑制后出现的旁通与代偿通路，保留小样本、阴性结果与旧命名，并给出可审计的证据链。",
+    "statement_hash": "3e365ca7f729fb48734e4d6c21b6539d7ded328e80563fb9247243051841f72c",
+    "scope": {
+      "included": ["旁通", "代偿", "冗余", "反馈", "小样本研究", "阴性结果", "旧命名"],
+      "excluded": ["非哺乳动物机制的未经验证推断", "未经实验验证的综述断言"]
+    },
+    "version": "1.0.0"
+  },
+  "themes": [
+    {"theme_id": "TH-ROOT", "statement": "靶点 X 抑制后的代偿网络总览", "version": "1.0.0", "status": "active"},
+    {"theme_id": "TH-01", "statement": "旁通通路：绕过靶点 X 的替代路径", "version": "1.0.0", "status": "active"},
+    {"theme_id": "TH-02", "statement": "代偿与冗余机制：功能补偿与平行通路", "version": "1.0.0", "status": "active"},
+    {"theme_id": "TH-03", "statement": "阴性结果与旧命名：被忽略的证据与历史术语", "version": "1.0.0", "status": "active"}
+  ],
+  "theme_topology": {
+    "roots": ["TH-ROOT"],
+    "edges": [
+      {"parent": "TH-ROOT", "child": "TH-01", "sub_n": 1},
+      {"parent": "TH-ROOT", "child": "TH-02", "sub_n": 2},
+      {"parent": "TH-ROOT", "child": "TH-03", "sub_n": 3}
+    ]
+  },
+  "query_blocks": [
+    {"id": "QB-coarse-01", "phase": "coarse", "theme": "TH-ROOT", "objective": "粗检索：建立靶点 X 抑制后的代偿网络全景与哨兵文献", "source_classes": ["primary-literature", "relation-resources"], "status": "executed"},
+    {"id": "QB-sub-01", "phase": "subtheme", "theme": "TH-01", "objective": "子主题检索：旁通通路的直接证据", "source_classes": ["primary-literature"], "status": "executed"},
+    {"id": "QB-sub-02", "phase": "subtheme", "theme": "TH-02", "objective": "子主题检索：代偿与冗余机制的实验证据", "source_classes": ["primary-literature"], "status": "executed"},
+    {"id": "QB-sub-03", "phase": "subtheme", "theme": "TH-03", "objective": "子主题检索：阴性结果、失败复现与旧命名记录", "source_classes": ["preprints", "proceedings"], "status": "executed"},
+    {"id": "QB-fine-01", "phase": "fine", "theme": "TH-ROOT", "objective": "精细检索：引文链、利益关系、资金来源与基础数据核对", "source_classes": ["citation", "registries", "data"], "status": "executed"}
+  ],
+  "rounds": [
+    {
+      "round_id": "R1", "phase": "coarse", "target_hash": "3e365ca7f729fb48734e4d6c21b6539d7ded328e80563fb9247243051841f72c",
+      "alignment": {"target_rechecked": true, "themes_covered": ["TH-ROOT"], "notes": "粗检索阶段仅覆盖总览主题，未进入子主题。"},
+      "cleaning": {"deduped": true, "versions_merged": true, "families_merged": true, "notes": "合并同一研究家族的不同版本。"},
+      "review": {"reviewed_by": "two-reader-screening", "method": "双人独立筛选标题与摘要", "notes": "分歧由第三人裁决。"},
+      "gate": {"round_id": "R1", "cleaning_passed": true, "review_passed": true, "regression_passed": true, "notes": "粗检索门通过。"},
+      "query_blocks": ["QB-coarse-01"]
+    },
+    {
+      "round_id": "R2", "phase": "subtheme", "target_hash": "3e365ca7f729fb48734e4d6c21b6539d7ded328e80563fb9247243051841f72c",
+      "alignment": {"target_rechecked": true, "themes_covered": ["TH-01", "TH-02", "TH-03"], "notes": "子主题检索覆盖全部三个子主题。"},
+      "cleaning": {"deduped": true, "versions_merged": true, "families_merged": true, "notes": "按研究家族合并重叠数据集。"},
+      "review": {"reviewed_by": "domain-expert", "method": "领域专家核对机制相关性", "notes": "旧命名映射到当前术语。"},
+      "gate": {"round_id": "R2", "cleaning_passed": true, "review_passed": true, "regression_passed": true, "notes": "子主题检索门通过。"},
+      "query_blocks": ["QB-sub-01", "QB-sub-02", "QB-sub-03"]
+    },
+    {
+      "round_id": "R3", "phase": "fine", "target_hash": "3e365ca7f729fb48734e4d6c21b6539d7ded328e80563fb9247243051841f72c",
+      "alignment": {"target_rechecked": true, "themes_covered": ["TH-ROOT", "TH-01", "TH-02", "TH-03"], "notes": "精细检索核对引文链、利益关系、资金来源与基础数据。"},
+      "cleaning": {"deduped": true, "versions_merged": true, "families_merged": true, "notes": "最终证据家族冻结。"},
+      "review": {"reviewed_by": "statistical-review", "method": "统计与利益关系复核", "notes": "确认资金来源与利益冲突声明完整。"},
+      "gate": {"round_id": "R3", "cleaning_passed": true, "review_passed": true, "regression_passed": true, "notes": "精细检索门通过，证据链闭合。"},
+      "query_blocks": ["QB-fine-01"]
+    }
+  ],
+  "alignment_records": [
+    {"round_id": "R1", "target_hash": "3e365ca7f729fb48734e4d6c21b6539d7ded328e80563fb9247243051841f72c", "drift_detected": false},
+    {"round_id": "R2", "target_hash": "3e365ca7f729fb48734e4d6c21b6539d7ded328e80563fb9247243051841f72c", "drift_detected": false},
+    {"round_id": "R3", "target_hash": "3e365ca7f729fb48734e4d6c21b6539d7ded328e80563fb9247243051841f72c", "drift_detected": false}
+  ],
+  "gates": [
+    {"round_id": "R1", "cleaning_passed": true, "review_passed": true, "regression_passed": true, "notes": "粗检索门通过。"},
+    {"round_id": "R2", "cleaning_passed": true, "review_passed": true, "regression_passed": true, "notes": "子主题检索门通过。"},
+    {"round_id": "R3", "cleaning_passed": true, "review_passed": true, "regression_passed": true, "notes": "精细检索门通过。"}
+  ],
+  "evidence": [
+    {"evidence_id": "EV-01", "locator": "https://doi.org/10.1000/xyz123", "claim": "靶点 X 抑制后出现旁通通路激活。", "polarity": "supporting", "interest": {"declared": true, "conflicts": []}, "funding": "NIH grant R01-XX", "family": "FAM-01", "query_block": "QB-sub-01"},
+    {"evidence_id": "EV-02", "locator": "10.1000/abc456", "claim": "另一队列未观察到旁通代偿。", "polarity": "contradicting", "interest": {"declared": true, "conflicts": ["作者受靶点 X 抑制剂厂商资助"]}, "funding": "PharmaCorp grant", "family": "FAM-02", "query_block": "QB-sub-01"},
+    {"evidence_id": "EV-03", "locator": "arXiv:2401.12345", "claim": "预印本报告阴性结果，样本量小。", "polarity": "null", "interest": {"declared": true, "conflicts": []}, "funding": "unfunded", "family": "FAM-03", "query_block": "QB-sub-03"},
+    {"evidence_id": "EV-04", "locator": "PMID:12345678", "claim": "旧命名研究被重新映射到当前术语。", "polarity": "supporting", "interest": {"declared": true, "conflicts": []}, "funding": "university fund", "family": "FAM-01", "query_block": "QB-sub-03"},
+    {"evidence_id": "EV-05", "locator": "file://references/raw-data-01.csv", "claim": "基础数据表：各研究样本量与效应量。", "polarity": "uncertain", "interest": {"declared": true, "conflicts": []}, "funding": "not applicable", "family": "FAM-DATA", "query_block": "QB-fine-01"}
+  ]
+}

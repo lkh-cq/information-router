@@ -1,0 +1,12 @@
+{"id":"adv-drift-hash","prompt":"对抗：Target 的 statement_hash 与语句不符，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"target hash drift"},"mutation":"drift_hash"}
+{"id":"adv-wrong-phase-order","prompt":"对抗：三轮 Loop 顺序不是 coarse→subtheme→fine，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"strict phase order violated"},"mutation":"wrong_phase_order"}
+{"id":"adv-fake-locator","prompt":"对抗：证据定位符是伪造的（如“source 1”），校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"locator is not real"},"mutation":"fake_locator"}
+{"id":"adv-orphan-block","prompt":"对抗：存在没有任何轮次引用的 query-block，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"orphan query block"},"mutation":"orphan_block"}
+{"id":"adv-unknown-block-ref","prompt":"对抗：轮次引用了不存在的 query-block，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"unknown query block reference"},"mutation":"unknown_block_ref"}
+{"id":"adv-extra-field","prompt":"对抗：Target 携带 schema 未允许的多余字段，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"additional property rejected"},"mutation":"extra_field"}
+{"id":"adv-cycle-topology","prompt":"对抗：主题拓扑出现环，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"theme topology cycle"},"mutation":"cycle_topology"}
+{"id":"adv-missing-interest","prompt":"对抗：证据缺少利益关系声明，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"missing interest declaration"},"mutation":"missing_interest"}
+{"id":"adv-drift-detected","prompt":"对抗：对齐记录报告发生了漂移，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"alignment reports drift"},"mutation":"drift_detected"}
+{"id":"adv-unpassed-gate","prompt":"对抗：某轮回归门未通过却声称完成，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"gate has unpassed check"},"mutation":"unpassed_gate"}
+{"id":"adv-disconnected-theme","prompt":"对抗：存在既非根也非任何子节点的孤立主题，校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"disconnected theme"},"mutation":"disconnected_theme"}
+{"id":"adv-sub-n-wrong","prompt":"对抗：sub_n 序号不完整（如跳号），校验器必须拒绝。","expected":{"adversarial":true,"reject_reason":"sub_n ordinals incomplete"},"mutation":"sub_n_wrong"}

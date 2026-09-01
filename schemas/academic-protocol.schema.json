@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lkh-cq/information-router/schemas/academic-protocol.schema.json",
+  "title": "Information Router Academic Protocol",
+  "description": "Non-drifting Target, versioned Themes with sub_n topology, strict three-round loop (coarse -> subtheme -> fine), per-round alignment/cleaning/review/gates, and auditable evidence with real locators, interest, funding, and family.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "target", "themes", "theme_topology", "query_blocks", "rounds", "alignment_records", "gates", "evidence"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "target": {"$ref": "#/$defs/target"},
+    "themes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/theme"}},
+    "theme_topology": {"$ref": "#/$defs/themeTopology"},
+    "query_blocks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/queryBlock"}},
+    "rounds": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/round"}},
+    "alignment_records": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/alignmentRecord"}},
+    "gates": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/gate"}},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidenceRecord"}}
+  },
+  "$defs": {
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target_id", "statement", "statement_hash", "scope", "version"],
+      "properties": {
+        "target_id": {"type": "string", "pattern": "^T-[A-Za-z0-9_-]+$"},
+        "statement": {"type": "string", "minLength": 1},
+        "statement_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "scope": {
+          "type": "object", "additionalProperties": false,
+          "required": ["included", "excluded"],
+          "properties": {
+            "included": {"type": "array", "items": {"type": "string", "minLength": 1}},
+            "excluded": {"type": "array", "items": {"type": "string", "minLength": 1}}
+          }
+        },
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+      }
+    },
+    "theme": {
+      "type": "object", "additionalProperties": false,
+      "required": ["theme_id", "statement", "version", "status"],
+      "properties": {
+        "theme_id": {"type": "string", "pattern": "^TH-[A-Za-z0-9_-]+$"},
+        "statement": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "status": {"enum": ["active", "frozen", "superseded"]}
+      }
+    },
+    "themeTopology": {
+      "type": "object", "additionalProperties": false,
+      "required": ["roots", "edges"],
+      "properties": {
+        "roots": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^TH-[A-Za-z0-9_-]+$"}},
+        "edges": {"type": "array", "items": {"$ref": "#/$defs/themeEdge"}}
+      }
+    },
+    "themeEdge": {
+      "type": "object", "additionalProperties": false,
+      "required": ["parent", "child", "sub_n"],
+      "properties": {
+        "parent": {"type": "string", "pattern": "^TH-[A-Za-z0-9_-]+$"},
+        "child": {"type": "string", "pattern": "^TH-[A-Za-z0-9_-]+$"},
+        "sub_n": {"type": "integer", "minimum": 1}
+      }
+    },
+    "queryBlock": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "phase", "theme", "objective", "source_classes", "status"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^QB-[A-Za-z0-9_-]+$"},
+        "phase": {"enum": ["coarse", "subtheme", "fine"]},
+        "theme": {"type": "string", "pattern": "^TH-[A-Za-z0-9_-]+$"},
+        "objective": {"type": "string", "minLength": 1},
+        "source_classes": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "status": {"enum": ["planned", "executed", "blocked", "skipped"]}
+      }
+    },
+    "round": {
+      "type": "object", "additionalProperties": false,
+      "required": ["round_id", "phase", "target_hash", "alignment", "cleaning", "review", "gate", "query_blocks"],
+      "properties": {
+        "round_id": {"type": "string", "pattern": "^R[0-9]+$"},
+        "phase": {"enum": ["coarse", "subtheme", "fine"]},
+        "target_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "alignment": {"$ref": "#/$defs/alignment"},
+        "cleaning": {"$ref": "#/$defs/cleaning"},
+        "review": {"$ref": "#/$defs/review"},
+        "gate": {"$ref": "#/$defs/gate"},
+        "query_blocks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^QB-[A-Za-z0-9_-]+$"}}
+      }
+    },
+    "alignment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target_rechecked", "themes_covered", "notes"],
+      "properties": {
+        "target_rechecked": {"type": "boolean"},
+        "themes_covered": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^TH-[A-Za-z0-9_-]+$"}},
+        "notes": {"type": "string"}
+      }
+    },
+    "cleaning": {
+      "type": "object", "additionalProperties": false,
+      "required": ["deduped", "versions_merged", "families_merged", "notes"],
+      "properties": {
+        "deduped": {"type": "boolean"},
+        "versions_merged": {"type": "boolean"},
+        "families_merged": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    },
+    "review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reviewed_by", "method", "notes"],
+      "properties": {
+        "reviewed_by": {"type": "string", "minLength": 1},
+        "method": {"type": "string", "minLength": 1},
+        "notes": {"type": "string"}
+      }
+    },
+    "gate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["round_id", "cleaning_passed", "review_passed", "regression_passed", "notes"],
+      "properties": {
+        "round_id": {"type": "string", "pattern": "^R[0-9]+$"},
+        "cleaning_passed": {"type": "boolean"},
+        "review_passed": {"type": "boolean"},
+        "regression_passed": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    },
+    "alignmentRecord": {
+      "type": "object", "additionalProperties": false,
+      "required": ["round_id", "target_hash", "drift_detected"],
+      "properties": {
+        "round_id": {"type": "string", "pattern": "^R[0-9]+$"},
+        "target_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "drift_detected": {"type": "boolean"}
+      }
+    },
+    "evidenceRecord": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_id", "locator", "claim", "polarity", "interest", "funding", "family", "query_block"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^EV-[A-Za-z0-9_-]+$"},
+        "locator": {"type": "string", "minLength": 1},
+        "claim": {"type": "string", "minLength": 1},
+        "polarity": {"enum": ["supporting", "contradicting", "null", "uncertain"]},
+        "interest": {"$ref": "#/$defs/interest"},
+        "funding": {"type": "string", "minLength": 1},
+        "family": {"type": "string", "minLength": 1},
+        "query_block": {"type": "string", "pattern": "^QB-[A-Za-z0-9_-]+$"}
+      }
+    },
+    "interest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["declared", "conflicts"],
+      "properties": {
+        "declared": {"type": "boolean"},
+        "conflicts": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}
